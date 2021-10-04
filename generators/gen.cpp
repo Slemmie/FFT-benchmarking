@@ -5,7 +5,7 @@
 #include <random>
 #include <string>
 
-constexpr int TOTAL = 10;
+constexpr int TOTAL = 50;
 constexpr int LEN = 1 << 20;
 //constexpr int LEN = 1 << 5;
 

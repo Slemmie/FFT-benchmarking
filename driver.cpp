@@ -9,7 +9,7 @@
 #include <string>
 #include <complex>
 
-constexpr size_t NUM_INPUTS = 10;
+constexpr size_t NUM_INPUTS = 50;
 std::vector <std::vector <double>> input_double(NUM_INPUTS);
 std::vector <std::vector <long double>> input_long_double(NUM_INPUTS);
 
@@ -18,6 +18,8 @@ std::vector <std::vector <std::complex <long double>>> output_long_double_correc
 
 std::vector <std::vector <std::complex <double>>> output_double_variation1(NUM_INPUTS);
 std::vector <std::vector <std::complex <long double>>> output_long_double_variation1(NUM_INPUTS);
+
+std::vector <std::vector <std::complex <double>>> output_double_variation2(NUM_INPUTS);
 
 void read_input();
 
@@ -31,6 +33,7 @@ namespace run {
 	void validator_implementation_FFT_long_double();
 	void variation_1_FFT_double();
 	void variation_1_FFT_long_double();
+	void variation_2_FFT_double();
 }
 
 struct Summary_Item {
@@ -49,11 +52,13 @@ int main() {
 	read_input();
 	
 	run::validator_implementation_FFT_double();
-	run::validator_implementation_FFT_long_double();
+	//run::validator_implementation_FFT_long_double();
 	run::variation_1_FFT_double();
 	validate("variation1/FFT (double)", output_double_variation1, output_double_correct);
-	run::variation_1_FFT_long_double();
-	validate("variation1/FFT (long double)", output_long_double_variation1, output_long_double_correct);
+	//run::variation_1_FFT_long_double();
+	//validate("variation1/FFT (long double)", output_long_double_variation1, output_long_double_correct);
+	run::variation_2_FFT_double();
+	validate("variation2/FFT (double)", output_double_variation2, output_double_correct);
 	
 	std::cerr << "* summary *" << std::endl;
 	for (Summary_Item& item : summary_items) {
@@ -256,6 +261,31 @@ namespace run {
 		}
 		summary_items.push_back(
 		Summary_Item("variations/FFT (FFT_v1_long_double)", time_end, util::get_avg(times)));
+	}
+	
+	void variation_2_FFT_double() {
+		std::vector <long long> times(NUM_INPUTS);
+		Timer timer;
+		
+		timer.pause();
+		util::print_progress(0, NUM_INPUTS, "progress");
+		timer.resume();
+		for (size_t i = 0; i < NUM_INPUTS; i++) {
+			Timer local_timer;
+			output_double_variation2[i] = VARIATIONS::FFT_v2_double(input_double[i]);
+			times[i] = local_timer.split();
+			timer.pause();
+			util::print_progress(i + 1, NUM_INPUTS, "progress");
+			timer.resume();
+		}
+		
+		auto time_end = timer.split();
+		util::print_time("variations/FFT (FFT_v2_double)", time_end, util::get_avg(times));
+		for (size_t i = 0; i < NUM_INPUTS; i++) {
+			util::print_time("    [input " + std::to_string(i) + "]", times[i]);
+		}
+		summary_items.push_back(
+		Summary_Item("variations/FFT (FFT_v2_double)", time_end, util::get_avg(times)));
 	}
 	
 } /// namespace run
