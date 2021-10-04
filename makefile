@@ -2,6 +2,7 @@
 INCLUDE = -I .
 SRC = \
 ./driver.cpp \
+./program_pool.cpp \
 ./validator_implementation/FFT.cpp \
 ./variations/FFT.cpp
 
