@@ -96,6 +96,7 @@ namespace VARIATIONS {
 		static std::complex <double> WN[21];
 		if (!is_init) {
 			here::initWN(WN, 21);
+			is_init = true;
 		}
 		std::complex <double> w(1), wn = WN[here::ctz(size)];
 		std::vector <std::complex <double>> result(size);
