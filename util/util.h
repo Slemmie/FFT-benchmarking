@@ -4,9 +4,13 @@
 #include <iostream>
 #include <iomanip>
 #include <string>
+#include <sstream>
 #include <complex>
 
 namespace util {
+	
+	// should be set somewhere else at program start
+	static std::string s_LOG_FILE = "logs/log0";
 	
 	void print_time(std::string message, long long time);
 	void print_time(std::string message, long long time, long long avg);
@@ -39,6 +43,12 @@ namespace util {
 		double d_time_avg = (double)avg * 0.001;
 		std::cerr << message << ": " << std::fixed << std::setprecision(3) << d_time << " ms (avg: " <<
 		d_time_avg << " ms)" << std::endl;
+	}
+	
+	std::string time_format(long long time) {
+		std::stringstream stream;
+		stream << std::fixed << std::setprecision(3) << (double)time * 0.001 << "ms";
+		return stream.str();
 	}
 	
 	void print_progress(int now, int total, const std::string& label) {
@@ -85,6 +95,12 @@ namespace util {
 	
 	template <typename A> bool compare(A v1, A v2) {
 		return v1 == v2;
+	}
+	
+	void push_log(const char* message) {
+		FILE* file = fopen("s_LOG_FILE", "a");
+		fprintf(file, "%s\n", message);
+		fclose(file);
 	}
 	
 	template <> bool compare(std::complex <double> v1, std::complex <double> v2) {
